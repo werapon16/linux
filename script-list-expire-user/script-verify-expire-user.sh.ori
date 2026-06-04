@@ -1,0 +1,42 @@
+#!/bin/bash
+USER_LIST=(
+	itd_sup3
+	inhouse1
+	infocoll
+	Infobrk
+	infohis
+	colladm
+	infoagen
+	inforef
+	infokyc
+	infocdd
+	infocust
+	gfserv
+	smlink01
+	sfmladm
+	brokadm
+	clickadm
+	sfixserv
+	itadmin
+)
+
+printf "%-15s %-10s %-15s %-20s %-20s\n" "USER" "USER_UID" "STATUS" "ACCOUNT_EXPIRE_DATE" "PASSWORD_EXPIRE_DATE"
+echo "---------------------------------------------------------------------------------------------------"
+
+for USER in "${USER_LIST[@]}"
+do
+   if id "$USER" >/dev/null 2>&1
+    then
+     USER_UID=$(id -u "$USER")
+      ACC_EXPIRE=$(chage -l "$USER" | awk -F': ' '/Account expires/{print $2}')
+      PASS_EXPIRE=$(chage -l "$USER" | awk -F': ' '/Password expires/{print $2}')
+
+      printf "%-15s %-10s %-15s %-20s %-20s\n" \
+       "$USER" "$USER_UID" "EXIST" "$ACC_EXPIRE" "$PASS_EXPIRE"
+   else
+      printf "%-15s %-10s %-15s %-20s %-20s\n" \
+	      "$USER" "-" "NOTFOUND" "-"  "-"
+   fi
+done
+
+
